@@ -94,6 +94,7 @@ You can specify a particular environment with the ```--env <environment>``` flag
 
 - `playwright`: Runs the browser locally using Playwright.
 - `browserbase`: Connects to a Browserbase instance.
+- `macos`: Sends commands directly to your macOS desktop.
 
 **Local Playwright**
 
@@ -116,6 +117,16 @@ Runs the agent using Browserbase as the browser backend. Ensure the proper Brows
 ```bash
 python main.py --query="Go to Google and type 'Hello World' into the search bar" --env="browserbase"
 ```
+
+**macOS Desktop**
+
+Runs the agent against your live macOS desktop using Accessibility APIs. Install the dependencies (`pip install -r requirements.txt` now includes `pyautogui`) and grant terminal or IDE Accessibility permissions in **System Settings → Privacy & Security → Accessibility**. The agent will move your real cursor.
+
+```bash
+python main.py --query="Open Google and search for Hello World" --env="macos"
+```
+
+The macOS.backend launches the default browser with `open <url>` when the model issues a `navigate` call. Other applications remain accessible, but the preview model is primarily tuned for web browsing, so expect best results inside a browser window.
 
 ## Agent CLI
 

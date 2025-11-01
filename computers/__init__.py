@@ -13,6 +13,7 @@
 # limitations under the License.
 from .computer import Computer, EnvState
 from .browserbase.browserbase import BrowserbaseComputer
+from .macos.macos import MacOSComputer
 from .playwright.playwright import PlaywrightComputer
 
 __all__ = [
@@ -20,4 +21,5 @@ __all__ = [
     "EnvState",
     "BrowserbaseComputer",
     "PlaywrightComputer",
+    "MacOSComputer",
 ]
