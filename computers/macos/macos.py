@@ -81,11 +81,6 @@ class MacOSComputer(Computer):
         size = pyautogui.size()
         return size.width, size.height
 
-    def open_web_browser(self) -> EnvState:
-        # Open the initial URL in the default browser.
-        self.navigate(self._initial_url)
-        return self.current_state()
-
     def click_at(self, x: int, y: int) -> EnvState:
         self._move_mouse(x, y)
         pyautogui.click(x=x, y=y)

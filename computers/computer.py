@@ -30,10 +30,6 @@ class Computer(abc.ABC):
         """Returns the screen size of the environment."""
 
     @abc.abstractmethod
-    def open_web_browser(self) -> EnvState:
-        """Opens the web browser."""
-
-    @abc.abstractmethod
     def click_at(self, x: int, y: int) -> EnvState:
         """Clicks at a specific x, y  coordinate on the webpage.
 

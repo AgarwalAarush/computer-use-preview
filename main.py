@@ -34,7 +34,7 @@ def main() -> int:
         "--env",
         type=str,
         choices=("playwright", "browserbase", "macos"),
-        default="playwright",
+        default="macos",
         help="The computer use environment to use.",
     )
     parser.add_argument(

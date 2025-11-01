@@ -63,7 +63,6 @@ CUSTOM_FUNCTION_DECLARATIONS = [
 
 # Exclude browser functions (kept for parity with upcoming Computer Use support)
 EXCLUDED_PREDEFINED_FUNCTIONS = [
-    "open_web_browser",
     "search",
     "navigate",
     "hover_at",

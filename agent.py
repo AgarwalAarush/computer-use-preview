@@ -32,7 +32,6 @@ from computers import EnvState, Computer
 
 MAX_RECENT_TURN_WITH_SCREENSHOTS = 3
 PREDEFINED_COMPUTER_USE_FUNCTIONS = [
-    "open_web_browser",
     "click_at",
     "hover_at",
     "type_text_at",
@@ -79,13 +78,23 @@ class BrowserAgent:
             project=os.environ.get("VERTEXAI_PROJECT"),
             location=os.environ.get("VERTEXAI_LOCATION"),
         )
+        guidance_text = (
+            "You are controlling an existing computer session. Only launch a web "
+            "browser when the user's request explicitly requires it or when the "
+            "browser is already the active window. Otherwise, continue working "
+            "within the currently visible applications. Follow the user's "
+            "instructions literally and avoid performing extra steps beyond what "
+            "is requested."
+        )
         self._contents: list[Content] = [
             Content(
                 role="user",
-                parts=[
-                    Part(text=self._query),
-                ],
-            )
+                parts=[Part(text=guidance_text)],
+            ),
+            Content(
+                role="user",
+                parts=[Part(text=self._query)],
+            ),
         ]
 
         # Exclude any predefined functions here.
@@ -118,8 +127,12 @@ class BrowserAgent:
     def handle_action(self, action: types.FunctionCall) -> FunctionResponseT:
         """Handles the action and returns the environment state."""
         if action.name == "open_web_browser":
-            return self._browser_computer.open_web_browser()
-        elif action.name == "click_at":
+            termcolor.cprint(
+                "Ignoring `open_web_browser` function call; continuing with current state.",
+                color="yellow",
+            )
+            return self._browser_computer.current_state()
+        if action.name == "click_at":
             x = self.denormalize_x(action.args["x"])
             y = self.denormalize_y(action.args["y"])
             return self._browser_computer.click_at(

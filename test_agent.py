@@ -35,11 +35,6 @@ class TestBrowserAgent(unittest.TestCase):
     def test_multiply_numbers(self):
         self.assertEqual(multiply_numbers(2, 3), {"result": 6})
 
-    def test_handle_action_open_web_browser(self):
-        action = types.FunctionCall(name="open_web_browser", args={})
-        self.agent.handle_action(action)
-        self.mock_browser_computer.open_web_browser.assert_called_once()
-
     def test_handle_action_click_at(self):
         action = types.FunctionCall(name="click_at", args={"x": 100, "y": 200})
         self.agent.handle_action(action)
@@ -56,6 +51,17 @@ class TestBrowserAgent(unittest.TestCase):
         action = types.FunctionCall(name="scroll_document", args={"direction": "down"})
         self.agent.handle_action(action)
         self.mock_browser_computer.scroll_document.assert_called_once_with("down")
+
+    def test_handle_action_open_web_browser_ignored(self):
+        env_state = EnvState(screenshot=b"img", url="https://example.com")
+        self.mock_browser_computer.current_state.return_value = env_state
+        action = types.FunctionCall(name="open_web_browser", args={})
+
+        result = self.agent.handle_action(action)
+
+        self.assertEqual(result, env_state)
+        self.mock_browser_computer.current_state.assert_called_once()
+        self.assertFalse(self.mock_browser_computer.open_web_browser.called)
 
     def test_handle_action_navigate(self):
         action = types.FunctionCall(name="navigate", args={"url": "https://example.com"})
@@ -84,8 +90,8 @@ class TestBrowserAgent(unittest.TestCase):
         result = self.agent.run_one_iteration()
 
         self.assertEqual(result, "COMPLETE")
-        self.assertEqual(len(self.agent._contents), 2)
-        self.assertEqual(self.agent._contents[1], mock_candidate.content)
+        self.assertEqual(len(self.agent._contents), 3)
+        self.assertEqual(self.agent._contents[-1], mock_candidate.content)
 
     @patch('agent.BrowserAgent.get_model_response')
     @patch('agent.BrowserAgent.handle_action')
@@ -104,7 +110,7 @@ class TestBrowserAgent(unittest.TestCase):
 
         self.assertEqual(result, "CONTINUE")
         mock_handle_action.assert_called_once_with(function_call)
-        self.assertEqual(len(self.agent._contents), 3)
+        self.assertEqual(len(self.agent._contents), 4)
 
 
 if __name__ == "__main__":

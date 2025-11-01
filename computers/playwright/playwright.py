@@ -147,9 +147,6 @@ class PlaywrightComputer(Computer):
 
         self._playwright.stop()
 
-    def open_web_browser(self) -> EnvState:
-        return self.current_state()
-
     def click_at(self, x: int, y: int):
         self.highlight_mouse(x, y)
         self._page.mouse.click(x, y)
